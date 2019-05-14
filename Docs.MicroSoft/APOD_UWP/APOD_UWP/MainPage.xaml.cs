@@ -28,6 +28,15 @@ namespace APOD_UWP
     public sealed partial class MainPage : Page
     {
         const string EndpointURL = "https://api.nasa.gov/planetary/apod";
+        // Settings name strings, used to preserve UI values between sessions.
+        const string SettingDateToday = "date today";
+        const string SettingShowOnStartup = "show on startup";
+        const string SettingImageCountToday = "image count today";
+        const string SettingLimitRange = "limit range";
+
+        // Declare a container for the local settings.
+        Windows.Storage.ApplicationDataContainer localSettings;
+        
 
         DateTime launchDate = new DateTime(1995, 6, 16);
 
@@ -36,9 +45,13 @@ namespace APOD_UWP
         public MainPage()
         {
             this.InitializeComponent();
+            // Create the container for the local settings.
+            localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
 
             MonthCalendar.MinDate = launchDate;
             MonthCalendar.MaxDate = DateTime.Today;
+
+            ReadSettings();
         }
 
         private void LaunchButton_Click(object sender, RoutedEventArgs e)
@@ -59,7 +72,7 @@ namespace APOD_UWP
             MonthCalendar.MinDate = launchDate;
         }
 
-        private async void MonthCalendar_DateChangedAsync(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
+        private async void MonthCalendar_DateChanged(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
         {
             await RetrievePhoto();
         }
@@ -149,5 +162,80 @@ namespace APOD_UWP
                     $"{response.StatusCode.ToString()} {response.ReasonPhrase}";
             }
         }
+
+        private void WriteSettings()
+        {
+            // Preserve the required UI settings in the local storage container.
+            localSettings.Values[SettingDateToday] = DateTime.Today.ToString();
+            localSettings.Values[SettingShowOnStartup] = ShowTodaysImageCheckBox.IsChecked.ToString();
+            localSettings.Values[SettingLimitRange] = LimitRangeCheckBox.IsChecked.ToString();
+            localSettings.Values[SettingImageCountToday] = imageCountToday.ToString();
+        }
+
+        private void Grid_LostFocus(object sender, RoutedEventArgs e)
+        {
+            WriteSettings();
+        }
+
+        private void ReadSettings()
+        {
+            // If the app is being started the same day that it was run previously, the count of images downloaded today
+            // must be set to the stored setting. Otherwise, it should be zero.
+            bool isToday = false;
+            Object todayObject = localSettings.Values[SettingDateToday];
+
+            if (todayObject != null)
+            {
+                // First check to see if this is the same day as the previous run of the app.
+                DateTime dt = DateTime.Parse((string)todayObject);
+                if (dt.Equals(DateTime.Today))
+                {
+                    isToday = true;
+                }
+            }
+
+            // Set the default for images downloaded today.
+            imageCountToday = 0;
+
+            if (isToday)
+            {
+                Object value = localSettings.Values[SettingImageCountToday];
+                if (value != null)
+                {
+                    imageCountToday = int.Parse((string)value);
+                }
+            }
+            ImagesTodayTextBox.Text = imageCountToday.ToString();
+
+            // Set the UI check boxes, depending on the stored settings or defaults if there are no settings.
+            Object showTodayObject = localSettings.Values[SettingShowOnStartup];
+            if (showTodayObject != null)
+            {
+                ShowTodaysImageCheckBox.IsChecked = bool.Parse((string)showTodayObject);
+            }
+            else
+            {
+                // Set the default.
+                ShowTodaysImageCheckBox.IsChecked = true;
+            }
+
+            Object limitRangeObject = localSettings.Values[SettingLimitRange];
+            if (limitRangeObject != null)
+            {
+                LimitRangeCheckBox.IsChecked = bool.Parse((string)limitRangeObject);
+            }
+            else
+            {
+                // Set the default.
+                LimitRangeCheckBox.IsChecked = false;
+            }
+
+            // Show today's image if the check box requires it.
+            if (ShowTodaysImageCheckBox.IsChecked == true)
+            {
+                MonthCalendar.Date = DateTime.Today;
+            }
+        }
+
     }
 }

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid HorizontalAlignment="Stretch" Margin="0,-1,0,1" VerticalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" Margin="0,-1,0,1" VerticalAlignment="Stretch" LostFocus="Grid_LostFocus">
         <CalendarDatePicker Name="MonthCalendar" DateChanged="MonthCalendar_DateChanged" HorizontalAlignment="Left" Margin="40,40,0,0" VerticalAlignment="Top" Width="320" Height="42"/>
         <Button Name="LaunchButton" Click="LaunchButton_Click" FontSize="18" Content="转到APOD发布日期" HorizontalAlignment="Left" Margin="40,100,0,0" VerticalAlignment="Top" Width="222" Height="42"/>
         <Border BorderBrush="Black" HorizontalAlignment="Left" Height="171" Margin="40,163,0,0" VerticalAlignment="Top" Width="320" BorderThickness="1,1,1,1"/>
@@ -19,8 +19,8 @@
         <TextBlock FontSize="18" HorizontalAlignment="Left" Margin="40,364,0,0" Text="图像署名和版权" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <TextBox Name="ImageCopyrightTextBox" FontSize="18" HorizontalAlignment="Left" Margin="40,388,0,0" Text="TextBox" VerticalAlignment="Top" Height="42" Width="320" Background="#FFFFFFC0" IsReadOnly="True"/>
         <TextBlock FontSize="18" HorizontalAlignment="Left" Margin="40,461,0,0" Text="说明" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.833,1.89"/>
-        <TextBox Name="DescriptionTextBox" HorizontalAlignment="Left" Margin="40,490,0,0" Text="TextBox" VerticalAlignment="Top" Height="56" Width="903" Background="#FFFFFFC0" IsReadOnly="True" TextWrapping="Wrap"/>
-        <Border Name="PictureBorder" BorderBrush="Black" HorizontalAlignment="Left" Height="390" Margin="383,40,0,0" VerticalAlignment="Top" Width="560" BorderThickness="1,1,1,1">
+        <TextBox Name="DescriptionTextBox" HorizontalAlignment="Left" Margin="40,490,0,0" Text="TextBox" VerticalAlignment="Top" Height="121" Width="1003" Background="#FFFFFFC0" IsReadOnly="True" TextWrapping="Wrap"/>
+        <Border Name="PictureBorder" BorderBrush="Black" HorizontalAlignment="Left" Height="390" Margin="383,40,0,0" VerticalAlignment="Top" Width="660" BorderThickness="1,1,1,1">
             <Image Name="ImagePictureBox" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"/>
         </Border>
 
